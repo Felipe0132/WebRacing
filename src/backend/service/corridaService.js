@@ -26,7 +26,7 @@ class CorridaService{
     }
 
     async update(id, data){
-        const updated = await this.corridaModel.findByIdAndUpdate(id, data, {new: true})
+        const updated = await this.corridaModel.findByIdAndUpdate(id, data, {new: true}) // Funcao do mongoose
         if(!updated){
             throw new Error('Corrida nao foi encontrada!')
         }
