@@ -5,24 +5,42 @@ class CorridaService{
         this.corridaModel = corridaModel
     }
 
-    async create(corridaData){
-        try{ 
-            if (!corridaData || !corridaData.link) {
-                throw new Error('Dados insuficientes: o link da corrida é obrigatório.');
-            }
-
-            const corridaExists = await this.corridaModel.findOne({link: corridaData.link}) // Corridas com links iguais nao podem existir, entao sao iguais
-
-            if(corridaExists){
-                throw new Error('Essa corrida ja existe!')
-            }
-
-            const corridaRecord = await this.corridaModel.create(corridaData);
-
-            return corridaRecord;
-        }catch(error){
-            throw error
+    async create(data){
+        if (!data.nome || !data.data || !data.local || !data.link) {
+            throw new Error('Dados incompletos: nome, data, local e link são obrigatórios.');
         }
+
+        const exists = await this.corridaModel.findOne({ link: data.link }); // Verifica se existe algum com o mesmo link
+        if (exists) throw new Error('Esta corrida já está cadastrada.');
+
+        return await this.corridaModel.create(data);
+    }
+
+    async busca(filtros){ // Recebe um objeto que tem os parametros de busca
+        try{
+            const corridas = await this.corridaModel.find(filtros) // Se for vazio, retorna tudo
+            return corridas
+        }catch(error){
+            throw new Error('Erro ao fazer busca')
+        }
+    }
+
+    async update(id, data){
+        const updated = await this.corridaModel.findByIdAndUpdate(id, data, {new: true})
+        if(!updated){
+            throw new Error('Corrida nao foi encontrada!')
+        }
+
+        return updated
+    }
+
+    async delete(id){
+        const deleted = await this.corridaModel.findByIdAndDelete(id)
+        if(!deleted){
+            throw new Error('Corrida nao foi encontrada!')
+        }
+
+        return {message: 'Corrida removida!'}
     }
 }
 
