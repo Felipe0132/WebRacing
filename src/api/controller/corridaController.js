@@ -13,27 +13,37 @@ const create = async(req, res) => {
 
 const buscar = async(req, res) => {
     try{
-        const { nome, data, local, distancia } = req.query
+        const { nome, dia, mes, ano, local, distancia } = req.query
         const filtros = {}
+        const condicoesData = []
 
         if (nome) {
             filtros.nome = new RegExp(nome, 'i')
         }
 
         if (local) {
-            filtros.nome = new RegExp(local, 'i')
+            filtros.local = new RegExp(local, 'i')
         }
 
         if (distancia) {
             filtros.distancias = Number(distancia)
         }
 
-        if(data){
-            const dataFormatada = new Date(data)
-
-            filtros.data = dataFormatada
+        if(dia && dia >= 1 && dia <= 31){
+            condicoesData.push({$eq: [{$dayOfMonth: '$data'}, Number(dia)]})
         }
 
+        if(mes && mes >= 1 && mes <= 12){
+            condicoesData.push({$eq: [{$month: '$data'}, Number(mes) - 1]})
+        }
+
+        if(ano && ano > 0){
+            condicoesData.push({$eq: [{$year: '$data'}, Number(ano)]})
+        }
+
+        if (condicoesData.length > 0) {
+            filtros.$expr = { $and: condicoesData };
+        }
 
         const records = await corridaService.busca(filtros); 
         return res.json(records)
