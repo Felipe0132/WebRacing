@@ -30,11 +30,11 @@ const buscar = async(req, res) => {
         }
 
         if(dia && dia >= 1 && dia <= 31){
-            condicoesData.push({$eq: [{$dayOfMonth: '$data'}, Number(dia)]})
+            condicoesData.push({$eq: [{$dayOfMonth: '$data'}, Number(dia)+1]})
         }
 
         if(mes && mes >= 1 && mes <= 12){
-            condicoesData.push({$eq: [{$month: '$data'}, Number(mes) - 1]})
+            condicoesData.push({$eq: [{$month: '$data'}, Number(mes)]})
         }
 
         if(ano && ano > 0){
