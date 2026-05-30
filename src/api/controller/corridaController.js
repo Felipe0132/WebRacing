@@ -4,7 +4,7 @@ const corridaService = new CorridaService()
 
 const create = async(req, res) => {
     try{
-        const record = await corridaService.create(req.body) // Cria no Service
+        const record = await corridaService.create(req.body) // cria os dados moo JSON
         return res.status(201).json(record)
     }catch(e){
         return res.status(400).json({error: e.message})
@@ -15,35 +15,22 @@ const buscar = async(req, res) => {
     try{
         const { nome, dia, mes, ano, local, distancia } = req.query
         const filtros = {}
-        const condicoesData = []
 
         if (nome) {
-            filtros.nome = new RegExp(nome, 'i')
+            filtros.$text = { $search: nome }; // Usa o indice do texto
         }
 
         if (local) {
-            filtros.local = new RegExp(local, 'i')
+            filtros.local = local; // Removido RegExp para usar o índice exato
         }
 
         if (distancia) {
             filtros.distancias = Number(distancia)
         }
 
-        if(dia && dia >= 1 && dia <= 31){
-            condicoesData.push({$eq: [{$dayOfMonth: '$data'}, Number(dia)+1]})
-        }
-
-        if(mes && mes >= 1 && mes <= 12){
-            condicoesData.push({$eq: [{$month: '$data'}, Number(mes)]})
-        }
-
-        if(ano && ano > 0){
-            condicoesData.push({$eq: [{$year: '$data'}, Number(ano)]})
-        }
-
-        if (condicoesData.length > 0) {
-            filtros.$expr = { $and: condicoesData };
-        }
+        if (dia) filtros.dia = Number(dia);
+        if (mes) filtros.mes = Number(mes);
+        if (ano) filtros.ano = Number(ano);
 
         const records = await corridaService.busca(filtros); 
         return res.json(records)
@@ -60,6 +47,7 @@ const update = async(req, res) => {
         return res.status(400).json({error: e.message})
     }
 }
+
 const remove = async(req, res) => {
     try{
         const result = await corridaService.delete(req.params.id)

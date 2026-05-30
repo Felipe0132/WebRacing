@@ -32,5 +32,11 @@ const corridaSchema = new mongoose.Schema({
     }
 })
 
+corridaSchema.index({ local: 1, distancias: 1, data: 1 }); // Os indices usam a regra do ESR
+
+corridaSchema.index({ nome: "text" }); // Procura algo parecido com o original
+
+// Foi feito isso para otimizar a busca
+
 const Corrida = mongoose.model('Corrida', corridaSchema);
 module.exports = Corrida;
