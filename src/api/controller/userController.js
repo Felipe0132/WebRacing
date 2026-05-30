@@ -32,7 +32,7 @@ const update = async(req, res) => {
 const remove = async(req, res) => {
     try{
         const id = req.user._id // Vai pegar o ID que esta logado
-        
+
         const result = await userService.delete(id)
         return res.json(result)
     }catch(e){
@@ -41,5 +41,5 @@ const remove = async(req, res) => {
 }
 
 module.exports = {
-    findOrCreate, buscar, update, remove
+    buscar, update, remove
 };
