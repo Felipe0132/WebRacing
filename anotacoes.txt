@@ -1,0 +1,9 @@
+MongoDB nao eh SQL,entao nao usamos comando SQL, alem disso, criando o model, ele interpreta para o DB
+Como a url eh MONGODB_URI=mongodb://localhost:27017/webracing, significa que o DB esta rodando localmente
+$expr serve em Mongo para poder filtrar com logica, como por exemplo filtrar meses especificos, ele procura aquelas que tem a data contendo o mes especifico -> filtros.$expr = {$eq: [{ $month: '$data' }, Number(data)]}, busca quele que tem o mes igual a ao mes da data, $eq eh a expressao de igual
+QUando se usa o $expr, voce precisa armazenar as condicoes em uma lista para nao perder
+No final o filtro fica filtros.expres e recebe um and condicoes, assim ele pega todas as outras anteriores e acrescenta com as de data. Mass precisa verificar se houve condicoes de data antes
+Lib do Google para Login cria sozinho a parte de register, login e etc
+Mongoose cria sozinho o id
+
+Rodar Back: npm start
